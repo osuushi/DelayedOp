@@ -45,4 +45,4 @@ op.wait 'tag', (ok) -> someAsyncCall ->
 	ok() #you don't have to pass the tag in this style
 
 
-op.done()
+op.ready()

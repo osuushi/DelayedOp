@@ -13,7 +13,6 @@ class DelayedOp
 		@tags = {}
 		DelayedOp.addOp @
 		@wait DelayedOp.ready_tag
-	
 
 	###
 	wait: Wait for a balancing call to 'ok' before the operation can fire
@@ -48,13 +47,10 @@ class DelayedOp
 		throw new DelayedOpError tag if @tags[tag] < 0 
 		@fire() unless --@total #fire if we hit zero
 
-
-
-	
 	###
-	done: Finalize the operation
+	ready: Finalize the operation
 	###
-	done: -> @ok DelayedOp.ready_tag
+	ready: -> @ok DelayedOp.ready_tag
 
 	#Private instance members and methods
 	fire: ->
