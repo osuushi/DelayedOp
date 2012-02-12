@@ -5,7 +5,7 @@ Demo script for the different styles
 #A useless asynchronous function for demo purposes
 someAsyncCall = (cb) -> setTimeout cb, 500 + 500*Math.random()
 
-op = new DelayedOp 'Demo', -> alert 'All operations have completed.'
+op = new DelayedOp 'Demo'
 
 
 ###
@@ -45,4 +45,4 @@ op.wait 'tag', (ok) -> someAsyncCall ->
 	ok() #you don't have to pass the tag in this style
 
 
-op.ready()
+op.ready -> alert 'All operations have completed.'

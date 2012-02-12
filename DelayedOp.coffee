@@ -5,10 +5,8 @@ class DelayedOp
 	###
 	constructor:
 		name: A name for this operation, useful for debugging (optional)
-		cb: The callback executed when waiting is complete. (required)
 	###
-	constructor: (@name, @cb) ->
-		[@name, @cb] = ['<Anonymous>', @name] unless @cb? # Allow name argument to be ommitted
+	constructor: (@name = '<Unnamed Operation>') ->
 		@total = 0
 		@tags = {}
 		DelayedOp.addOp @
@@ -49,8 +47,9 @@ class DelayedOp
 
 	###
 	ready: Finalize the operation
+		cb: the callback to attach
 	###
-	ready: -> @ok DelayedOp.ready_tag
+	ready: (@cb) -> @ok DelayedOp.ready_tag
 
 	#Private instance members and methods
 	fire: ->
