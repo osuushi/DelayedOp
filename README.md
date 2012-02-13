@@ -9,6 +9,13 @@ when things go wrong.
 
 Take a look at demo.coffee if you want to jump right in, or read on for a more detailed discussion.
 
+##Getting the library
+
+You can compile from the original DelayedOp.coffee source, or
+[download the minified version of the library](https://github.com/downloads/osuushi/DelayedOp/DelayedOp.min.js).
+
+
+
 ##Setting up the op object
 
 To begin with, you simply create a DelayedOp (you can give it an optional name for debugging purposes)
