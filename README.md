@@ -12,8 +12,7 @@ Take a look at demo.coffee if you want to jump right in, or read on for a more d
 ##Getting the library
 
 You can compile from the original DelayedOp.coffee source, or
-[download the minified version of the library](https://github.com/downloads/osuushi/DelayedOp/DelayedOp.min.js).
-
+[download](https://github.com/downloads/osuushi/DelayedOp/DelayedOp-0.1.1.min.js) the latest compiled version of the library.
 
 
 ##Setting up the op object
@@ -31,7 +30,7 @@ To begin with, you simply create a DelayedOp (you can give it an optional name f
 
 
 ##Adding operations
-There are four different styles for using this new object:
+There are five different styles for using this new object:
 
 ###Simple Style
 
@@ -45,7 +44,9 @@ There are four different styles for using this new object:
 <small>*(CoffeeScript)*</small>
 
 	op.wait()
-	someAsyncFunction -> op.ok()
+	someAsyncFunction ->
+		### Do stuff ###
+		op.ok()
 
 This style is the easiest to use. You call `op.wait()` before the async call, and then in the async function's
 callback, you call `op.ok()`.
@@ -62,13 +63,16 @@ Wouldn't it be nice if the `op` object could do some tracking for us in case we 
 
 	op.wait('tag');
 	someAsyncFunction(function() {
+		/* Do stuff */
 		op.ok('tag');
 	});
 
 <small>*(CoffeeScript)*</small>
 
 	op.wait 'tag'
-	someAsyncFunction -> op.ok 'tag'
+	someAsyncFunction -> 
+		### Do stuff ###
+		op.ok 'tag'
 
 This is very similar to the first style, but you pass the same string tag to both `wait` and `ok`. DelayedOp 
 tracks these tags individually, so if your calls are unbalanced, you'll know which tag caused the problem.
@@ -82,6 +86,7 @@ In that case...
 
 	op.wait(function(ok) {
 		someAsyncFunction(function() {
+			/* Do stuff */
 			ok();
 		});
 	}
@@ -89,6 +94,7 @@ In that case...
 <small>*(CoffeeScript)*</small>
 
 	op.wait (ok) -> someAsyncFunction ->
+		### Do stuff ###
 		ok()
 
 In this style, we pass a callback to `wait` which accepts an `ok` function as its parameter. The `ok` function 
@@ -97,14 +103,13 @@ programming error, you'll know *specifically* where the problem is.
 
 The only disadvantage to this style is that it adds a bit more boilerplate, especially in plain JavaScript.
 
-Finally, there's...
-
 ###Tagged Callback Style
 
 <small>*(JavaScript)*</small>
 
 	op.wait('tag', function(ok) {
 		someAsyncFunction(function() {
+			/* Do stuff */
 			ok();
 		});
 	}
@@ -112,10 +117,33 @@ Finally, there's...
 <small>*(CoffeeScript)*</small>
 
 	op.wait 'tag', (ok) -> someAsyncFunction ->
+		### Do stuff ###
 		ok()
 
 This is exactly like the callback style, but you also provide a tag string. Note that in this style, you do 
 not have to pass the tag to the passed `ok` function.
+
+###Returned "OK" Style
+
+<small>*(JavaScript)*</small>
+
+	var ok = op.wait('tag');
+	someAsyncFunction(function() {
+		/* Do stuff */
+		ok();
+	})
+	
+
+<small>*(CoffeeScript)*</small>
+
+	ok = op.wait 'tag'
+	someAsyncFunction ->
+		### Do stuff ###
+		ok()
+
+No matter what style you use, the `wait()` method always returns a special, single-use `ok()` function. If a 
+tag is provided to `wait()`, you do not have to pass it to `ok()` in this case. This is the same function that
+is passed to the callback in either of the callback styles. 
 
 ##Finishing up
 

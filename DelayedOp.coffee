@@ -1,5 +1,6 @@
 ###
-
+	DelayedOp
+	Version 0.1.1
 ###
 class DelayedOp
 	###
@@ -17,6 +18,9 @@ class DelayedOp
 		tag: A string to tag this wait with. If you do not use the callback technique, the same tag must be 
 			passed to the `ok` function that balances this wait. (optional)
 		callback: Optional callback that is called immediately and passed an ok function
+
+		return:
+			An OK callback that can only be called once
 	###
 	wait: (tag = '', callback) ->
 		#handle ommitted tag argument if callback passed
@@ -25,13 +29,14 @@ class DelayedOp
 		@tags[tag] ?= 0
 		@tags[tag]++
 		@total++
-		if callback?
-			#create the ok function to pass to the callback
-			ok = =>
-				@ok tag #pass tag to the callback
-				ok = -> throw new DelayedOpError tag #rewrite the ok function 
-			callback -> ok()
-		return
+
+		onceOK = => #create OK function that can only be called once
+			@ok tag #pass tag to the callback
+			onceOK = -> throw new DelayedOpError tag #rewrite the ok function 
+		
+		#Pass ok function caller to the callback
+		callback? -> onceOK()
+		return -> onceOK() #return ok function caller
 	
 	###
 	ok: Balance a call to 'wait'

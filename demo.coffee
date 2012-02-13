@@ -45,4 +45,14 @@ op.wait 'tag', (ok) -> someAsyncCall ->
 	ok() #you don't have to pass the tag in this style
 
 
+
+###
+Returned OK style
+###
+ok = op.wait
+someAsyncCall ->
+	console.log 'Returned style'
+	ok()
+
+
 op.ready -> alert 'All operations have completed.'
