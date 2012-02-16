@@ -58,10 +58,10 @@ someAsyncCall ->
 ###
 Return style with tag
 ###
-ok = op.wait 'tag'
+ok2 = op.wait 'tag'
 someAsyncCall ->
 	console.log 'Tagged return style'
-	ok()
+	ok2()
 
 
 
