@@ -82,7 +82,7 @@ class DelayedOp
 	@next_id: 0
 	@addOp: (op) -> @pending_ops[op.id = @next_id++] = op #add to the operations table
 	@removeOp: (op) -> delete @pending_ops[op.id] #remove from the operations table
-	@ready_tag: '__reserved_ready' #private tag for ready
+	@ready_tag: '<ready() not called>' #private tag for ready
 
 class DelayedOpError extends Error
 	constructor: (tag) -> @message = "ok() callback called too many times (tag: '#{tag}') ";
