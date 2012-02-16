@@ -15,12 +15,13 @@ class DelayedOp
 
 	###
 	wait: Wait for a balancing call to 'ok' before the operation can fire
-		tag: A string to tag this wait with. If you do not use the callback technique, the same tag must be 
-			passed to the `ok` function that balances this wait. (optional)
-		callback: Optional callback that is called immediately and passed an ok function
+		tag: A string to tag this wait with. If you use the simple call style, the same tag must be 
+			passed to the `ok` method call that balances this wait. (optional)
+		callback: Optional callback that is called immediately and passed a single-use 'ok' function curried
+			with 'tag'
 
 		return:
-			An OK callback that can only be called once
+			An single-use 'ok' function, curried with 'tag'
 	###
 	wait: (tag = '', callback) ->
 		#handle ommitted tag argument if callback passed
