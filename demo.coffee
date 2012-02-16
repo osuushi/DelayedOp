@@ -19,12 +19,12 @@ someAsyncCall ->
 	op.ok()
 
 ###
-Tagged call style
+Simple call style with tag
 If your calls are unbalanced, you will at least know which tag it was.
 ###
 op.wait 'tag'
 someAsyncCall ->
-	console.log 'Tagged style'
+	console.log 'Tagged simple style'
 	op.ok 'tag'
 
 ###
@@ -37,7 +37,7 @@ op.wait (ok) -> someAsyncCall ->
 
 
 ###
-Tagged callback style
+Callback style with tag
 Just a tad more information for debugging 
 ###
 op.wait 'tag', (ok) -> someAsyncCall ->
@@ -47,12 +47,22 @@ op.wait 'tag', (ok) -> someAsyncCall ->
 
 
 ###
-Returned OK style
+Return style
 ###
-ok = op.wait
+ok = op.wait()
 someAsyncCall ->
-	console.log 'Returned style'
+	console.log 'Return style'
 	ok()
+
+
+###
+Return style with tag
+###
+ok = op.wait 'tag'
+someAsyncCall ->
+	console.log 'Tagged return style'
+	ok()
+
 
 
 op.ready -> alert 'All operations have completed.'
