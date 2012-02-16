@@ -1,7 +1,15 @@
 ###
-	DelayedOp
-	Version 0.1.1
+DelayedOp
+Version 0.1.1
 ###
+
+DelayedOpPrivate =
+	pending_ops: {} #operations that haven't fired yet
+	next_id: 0
+	addOp: (op) -> @pending_ops[op.id = @next_id++] = op #add to the operations table
+	removeOp: (op) -> delete @pending_ops[op.id] #remove from the operations table
+	ready_tag: '<ready() not called>' #private tag for ready
+
 class DelayedOp
 	###
 	constructor:
@@ -10,8 +18,8 @@ class DelayedOp
 	constructor: (@name = '<Unnamed Operation>') ->
 		@total = 0
 		@tags = {}
-		DelayedOp.addOp @
-		@wait DelayedOp.ready_tag
+		DelayedOpPrivate.addOp @
+		@wait DelayedOpPrivate.ready_tag
 
 	###
 	wait: Wait for a balancing call to 'ok' before the operation can fire
@@ -21,7 +29,7 @@ class DelayedOp
 			with 'tag'
 
 		return:
-			An single-use 'ok' function, curried with 'tag'
+			A single-use 'ok' function, curried with 'tag'
 	###
 	wait: (tag = '', callback) ->
 		#handle ommitted tag argument if callback passed
@@ -55,12 +63,12 @@ class DelayedOp
 	ready: Finalize the operation
 		cb: the callback to attach
 	###
-	ready: (@cb) -> @ok DelayedOp.ready_tag
+	ready: (@cb) -> @ok DelayedOpPrivate.ready_tag
 
 	#Private instance members and methods
 	fire: ->
 		@cb()
-		DelayedOp.removeOp @
+		DelayedOpPrivate.removeOp @
 	
 	pendingTags: -> (tag for own tag, count of @tags when count)
 
@@ -70,22 +78,15 @@ class DelayedOp
 	###
 	@logPending: ->
 		output = ''
-		for own id, op of @pending_ops
+		for own id, op of DelayedOpPrivate.pending_ops
 			output += "#{op.name}:\n"
 			for tag in op.pendingTags()
 				output += "    '#{tag}'\n"
 		console.log output
 
 
-	#Private class members and methods
-	@pending_ops: {} #operations that haven't fired yet
-	@next_id: 0
-	@addOp: (op) -> @pending_ops[op.id = @next_id++] = op #add to the operations table
-	@removeOp: (op) -> delete @pending_ops[op.id] #remove from the operations table
-	@ready_tag: '<ready() not called>' #private tag for ready
-
 class DelayedOpError extends Error
-	constructor: (tag) -> @message = "ok() callback called too many times (tag: '#{tag}') ";
+	constructor: (tag) -> @message = "ok() callback called too many times (tag: '#{tag}') "
 	name: 'DelayedOpError'
 
 root = exports ? this
