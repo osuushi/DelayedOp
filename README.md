@@ -28,7 +28,7 @@ Take a look at demo.coffee if you want to jump right in, or read on for a more d
 #Getting the library
 
 You can compile from the original DelayedOp.coffee source, or
-[download](https://github.com/downloads/osuushi/DelayedOp/DelayedOp-0.1.1.min.js) the latest compiled and 
+[download](https://github.com/downloads/osuushi/DelayedOp/DelayedOp-0.1.2.min.js) the latest compiled and 
 minified version of the library.
 
 <a name = "rm-usage" />
