@@ -9,6 +9,7 @@ DelayedOpPrivate =
 	addOp: (op) -> @pending_ops[op.id = @next_id++] = op #add to the operations table
 	removeOp: (op) -> delete @pending_ops[op.id] #remove from the operations table
 	ready_tag: '<ready() not called>' #private tag for ready
+	defaultTag: '<No Tag>'
 
 class DelayedOp
 	###
@@ -31,7 +32,7 @@ class DelayedOp
 		return:
 			A single-use 'ok' function, curried with 'tag'
 	###
-	wait: (tag = '', callback) ->
+	wait: (tag = DelayedOpPrivate.defaultTag, callback) ->
 		#handle ommitted tag argument if callback passed
 		[tag, callback] = ['', tag] if typeof tag == 'function'
 		#put the tag in the tag bag
@@ -51,7 +52,7 @@ class DelayedOp
 	ok: Balance a call to 'wait'
 		tag: The string passed to 'wait', if any
 	###
-	ok: (tag = '') ->
+	ok: (tag = DelayedOpPrivate.defaultTag) ->
 		#Decrement tag count
 		@tags[tag] ?= 0
 		@tags[tag]--
