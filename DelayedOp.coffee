@@ -70,19 +70,16 @@ class DelayedOp
 		@cb()
 		DelayedOpPrivate.removeOp @
 	
-	pendingTags: -> (tag for own tag, count of @tags when count)
+	#Get debug string info consisting of this operation's name and the number of opens for its unbalanced tags
+	#	(formatted for printing)
+	getDebugInfo: => "#{@name}\n" + ("    #{tag}: #{count}" for own tag, count of @tags when count).join '\n'
 
 	###
 	logPending: (class method)
-		Show all operations that have not fired, and their pending tags
+		Calls 'logInfo' an all unfired ops
 	###
 	@logPending: ->
-		output = ''
-		for own id, op of DelayedOpPrivate.pending_ops
-			output += "#{op.name}:\n"
-			for tag in op.pendingTags()
-				output += "    '#{tag}'\n"
-		console.log output
+		console.log '\n' + (op.getDebugInfo() for own id, op of DelayedOpPrivate.pending_ops).join '\n\n'
 
 
 class DelayedOpError extends Error
