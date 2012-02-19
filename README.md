@@ -28,7 +28,7 @@ Take a look at demo.coffee if you want to jump right in, or read on for a more d
 #Getting the library
 
 You can compile from the original DelayedOp.coffee source, or
-[download](https://github.com/downloads/osuushi/DelayedOp/DelayedOp-0.1.2.min.js) the latest compiled and 
+[download](https://github.com/downloads/osuushi/DelayedOp/DelayedOp-0.1.3.min.js) the latest compiled and 
 minified version of the library.
 
 <a name = "rm-usage" />
@@ -235,14 +235,33 @@ op.ready ->	alert 'All operations are complete.'
 ##Debugging
 
 DelayedOp throws informative exceptions if you have too many `ok` calls, or too few `wait`s, but what if you 
-forget to call `ok` or accidentally insert a duplicate `wait`? How do you find out why your operation isn't
-firing?
+forget to call `ok` or accidentally insert a duplicate `wait`?
 
-In that case, you can use the debugging method:
+When you create the operation, you can pass it a delay in seconds for the maximum time you expect your 
+asynchronous calls to take, like so:
+
+```js
+/* JavaScript */
+var op = new DelayedOp('My Operation', 10);
+```
+
+```coffee
+### CoffeeScript ###
+op = new DelayedOp 'My Operation', 10
+```
+
+This will tell the operation to wait 10 seconds after `ready()` is called, and then log its name and 
+unbalanced tags to the console if it has not yet fired. The output will look like this:
+
+```
+DelayedOp Timeout: My Operation
+    foo: 2
+    bar: 1
+```
+
+You can also see a list of all unfired operations and their unbalanced tags like so:
 
 ```js
 DelayedOp.logPending()
 ```
-
-This will log in the console the names of all unfired operations along with their unclosed tags.
 
