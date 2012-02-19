@@ -10,13 +10,19 @@ DelayedOpPrivate =
 	removeOp: (op) -> delete @pending_ops[op.id] #remove from the operations table
 	ready_tag: '<ready() not called>' #private tag for ready
 	defaultTag: '<No Tag>'
+	defaultName: '<Unnamed Operation>'
 
 class DelayedOp
 	###
 	constructor:
-		name: A name for this operation, useful for debugging (optional)
+		name: A name for this operation, useful for debugging (optional, but must be string if specified)
+		log_delay: A delay, in seconds, before the operation will log its unbalanced tags (optional)
 	###
-	constructor: (@name = '<Unnamed Operation>') ->
+	constructor: (@name = DelayedOpPrivate.defaultName, @log_delay) ->
+		#If name is a number, that means the name was omitted but log_delay was specified
+		if @name.constructor is Number
+			@log_delay = @name
+			@name = DelayedOpPrivate.defaultName
 		@total = 0
 		@tags = {}
 		DelayedOpPrivate.addOp @
@@ -64,10 +70,17 @@ class DelayedOp
 	ready: Finalize the operation
 		cb: the callback to attach
 	###
-	ready: (@cb) -> @ok DelayedOpPrivate.ready_tag
+	ready: (@cb) =>
+		#Set timeout to log unbalanced tags
+		if @log_delay?
+			logForTimeout = => console.log 'DelayedOp Timeout: ' + @getDebugInfo() unless @hasFired
+			@log_timeout = setTimeout logForTimeout, @log_delay*1000
+		@ok DelayedOpPrivate.ready_tag
 
 	#Private instance members and methods
 	fire: ->
+		clearTimeout @log_timeout if @log_timeout?
+		@hasFired = true
 		@cb()
 		DelayedOpPrivate.removeOp @
 	
